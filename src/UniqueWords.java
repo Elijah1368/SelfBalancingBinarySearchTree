@@ -5,11 +5,11 @@ public class UniqueWords {
 
     public UniqueWords() {
         book = new BookReader("WarAndPeace.txt");
-        addUniqueWordsToBST();
+        addUniqueWordsToAVL();
 
     }
 
-    public void addUniqueWordsToBST() {
+    public void addUniqueWordsToAVL() {
         //Resets pointer to first word
         book.words.first();
         MyBinarySearchTree<String> binarySearchTree = new MyBinarySearchTree<String>();
@@ -27,16 +27,16 @@ public class UniqueWords {
         }
 
         long time = System.currentTimeMillis() - start;
-        System.out.printf("Adding unique words to a binary search tree.. in %d milliseconds%n", time);
+        System.out.printf("Adding unique words to an AVL binary search tree.. in %d milliseconds%n", time);
         System.out.printf("%d unique words%n", binarySearchTree.size());
-        System.out.printf("The binary search tree had a height of %d and made %d comparisons.%n", binarySearchTree.height(), binarySearchTree.comparisons);
+        System.out.printf("%d height%n%d comparisons.%n%d rotations%n", binarySearchTree.height(), binarySearchTree.comparisons, binarySearchTree.rotations);
 
         //Times sorting unique words
         start = System.currentTimeMillis();
         binarySearchTree.toString();
         time = System.currentTimeMillis() - start;
 
-        System.out.printf("Traversing the binary search tree... in %d milliseconds%n%n", time);
+        System.out.printf("Traversing the AVL... in %d milliseconds%n%n", time);
         //System.out.println(linkedListUnique);
     }
 }

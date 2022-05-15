@@ -125,11 +125,21 @@ public class MyBinarySearchTree<T extends Comparable<T>>{
             } else if (subTree.left == null) {
                 return subTree.right;
             } else {
-                T val = leftMostRightSubTree(subTree.right);
-                subTree.item = val;
-                subTree.right = remove(val, subTree.right);
-                updateHeight(subTree);
-                return subTree;
+              
+                if (subTree.right.left != null) {
+                    T val = leftMostRightSubTree(subTree.right);
+                    subTree.item = val;
+                    subTree.right = remove(val, subTree.right);
+                    updateHeight(subTree);
+                    return subTree;
+                } else {
+                    T val = rightMostLeftSubTree(subTree.left);
+                    subTree.item = val;
+                    subTree.left = remove(val, subTree.left);
+                    updateHeight(subTree);
+                    return subTree;
+                }
+
             }
         } else if (subTree.item.compareTo(item) > 0) {
             subTree.left = remove(item, subTree.left);
@@ -150,6 +160,14 @@ public class MyBinarySearchTree<T extends Comparable<T>>{
             return n.item;
         } else {
             return leftMostRightSubTree(n.left);
+        }
+    }
+
+    private T rightMostLeftSubTree(Node n) {
+        if (n.right == null) {
+            return n.item;
+        } else {
+            return rightMostLeftSubTree(n.right);
         }
     }
 

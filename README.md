@@ -1,18 +1,7 @@
-## Getting Started
+Reads the whole War And Peace Book and counts the number of unique words in it. 
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Implemented LinkedList for storing the amount of words and implemented a self-balancing binary search tree to store unique words
 
-## Folder Structure
+Balancing the binary search tree is made possible by rotating its subtrees left or right depending on which direction to balance.
 
-The workspace contains two folders by default, where:
-
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+A self-balancing binary search tree is also commonly referred to as an AVL Tree.
