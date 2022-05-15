@@ -1,22 +1,33 @@
 public class MyBinarySearchTree<T extends Comparable<T>>{
     private Node root;
     private int size;
+    public Integer rotations;
+    private boolean balancing;
     public long comparisons;
 
     public MyBinarySearchTree() {
         root = null;
         size = 0;
         comparisons = 0;
+        rotations = 0;
+        balancing = false;
     }
 
+    public MyBinarySearchTree(boolean balancing) {
+        root = null;
+        size = 0;
+        comparisons = 0;
+        rotations = 0;
+        this.balancing = balancing;
+    }
 
     public void add(T item){
         this.root = add(item, root);
         size++;
+
     }
 
     private Node add(T item, Node subTree){
-
         if (subTree == null) {
             return new Node(item);
         }
@@ -29,7 +40,71 @@ public class MyBinarySearchTree<T extends Comparable<T>>{
 
         updateHeight(subTree);
 
+        if (balancing) {
+            return rebalance(subTree);   
+        }
+
         return subTree;
+    }
+
+    private Node rebalance(Node node) {
+        balancing = false;
+
+
+        //left-left case
+        if (node.balanceFactor > 1 && node.left.balanceFactor >= 0){
+            return rotateRight(node);
+        } 
+
+        //right-right shape
+        if (node.balanceFactor < -1 && node.right.balanceFactor <= 0){
+            return rotateLeft(node);
+        } 
+
+        //left-right shape
+        if (node.balanceFactor > 1 && node.left.balanceFactor < 0){
+            node.left = rotateLeft(node.left);
+            return rotateRight(node);
+        }
+
+        //right-left shape
+        if (node.balanceFactor < -1 && node.right.balanceFactor > 0){
+            node.right = rotateRight(node.right);
+            return rotateLeft(node);
+        } 
+
+
+        return node; 
+    } 
+
+    private Node rotateLeft(Node n) {
+        Node nRight = n.right;
+        Node nRightLeft = nRight.left;
+
+        nRight.left = n;
+        n.right = nRightLeft;
+        
+        updateHeight(n);
+        updateHeight(nRight);
+       
+
+        rotations++;
+        return nRight;
+    }
+
+    private Node rotateRight(Node n) {
+        Node nLeft = n.left;
+        Node nLeftRight = nLeft.right;
+
+        nLeft.right = n;
+        n.left = nLeftRight;
+
+        updateHeight(n);
+        updateHeight(nLeft);
+       
+
+        rotations++;
+        return nLeft;
     }
 
     public void remove(T item){
@@ -37,14 +112,13 @@ public class MyBinarySearchTree<T extends Comparable<T>>{
     }
 
     private Node remove(T item, Node subTree){
-
         if (subTree == null) {
             return null;
         }
 
         if (subTree.item.compareTo(item) == 0) {
             size--;
-            if (subTree.height == 0) {
+            if (subTree.right == null && subTree.left == null) {
                 return null;
             } else if (subTree.right == null) {
                 return subTree.left;
@@ -54,6 +128,7 @@ public class MyBinarySearchTree<T extends Comparable<T>>{
                 T val = leftMostRightSubTree(subTree.right);
                 subTree.item = val;
                 subTree.right = remove(val, subTree.right);
+                updateHeight(subTree);
                 return subTree;
             }
         } else if (subTree.item.compareTo(item) > 0) {
@@ -63,6 +138,9 @@ public class MyBinarySearchTree<T extends Comparable<T>>{
         }
 
         updateHeight(subTree);
+        if (balancing) {
+            return rebalance(subTree);   
+        }
 
         return subTree;
     }
@@ -132,6 +210,11 @@ public class MyBinarySearchTree<T extends Comparable<T>>{
         }
 
         node.height = Math.max(left, right) + 1;
+        node.balanceFactor = left - right;
+
+        if (Math.abs(node.balanceFactor) >= 2) {
+            balancing = true;
+        }
     }
 
     public String toString(){
@@ -164,6 +247,7 @@ public class MyBinarySearchTree<T extends Comparable<T>>{
     }
 
     private class Node {
+        public int balanceFactor;
         public T item;
         public Node left;
         public Node right;
@@ -174,10 +258,11 @@ public class MyBinarySearchTree<T extends Comparable<T>>{
             left = null;
             right = null;
             height = 0;
+            balanceFactor = 0;
         }
 
         public String toString() {
-            return String.format("%s:H%d", item, height);
+            return String.format("%s:H%d:B%d", item, height,balanceFactor);
         }
     }
 }
